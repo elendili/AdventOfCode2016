@@ -44,9 +44,7 @@ public class Day8 {
 
 
     @Test
-    public void test1() {
-//        System.out.println(new Screen());
-//        System.out.println(new Screen().rectAxB(50,6));
+    public void visualTest() {
         System.out.println(new Screen(7,3).exec("rect 3x2"));
         System.out.println(new Screen(7,3).exec("rect 3x2")
                 .exec("rotate column x=1 by 1"));
@@ -56,7 +54,6 @@ public class Day8 {
         System.out.println(x= new Screen(7,3).exec("rect 3x2   ")
                 .exec("rotate column x=1 by 1").exec("rotate row y=0 by 4").exec("rotate column x=1 by 1"));
         System.out.println(x.sum());
-//        System.out.println(new Screen().rectAxB(2,2).rotateCol(0,5));
     }
 
     class Screen {
