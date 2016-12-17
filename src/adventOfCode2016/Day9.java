@@ -5,15 +5,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 
@@ -92,25 +90,26 @@ public class Day9 {
     public static class Decompressor2 extends Decompressor{
 
         public Decompressor2 decompress(String input){
-
-            for (String residue=input;!residue.isEmpty();) {
-                Matcher matcher = group.matcher(residue);
-                if (matcher.find()) {
+            long[] counts = new long[input.length()];
+            Arrays.fill(counts,1);
+            Matcher matcher = group.matcher(input);
+            for (int i=0;;) {
+                if (matcher.find(i)) {
+                    i = matcher.end();
                     int size = Integer.parseInt(matcher.group(1));
                     int repetitions = Integer.parseInt(matcher.group(2));
-                    String[] s = residue.split(group.pattern(), 2);
-                    sizeForDecompressed+=s[0].length();
-                    if (s.length == 1) break;
-                    size = s[1].length() < size ? s[1].length() : size;
-                    String extracted = String.join("", Collections.nCopies(repetitions, s[1].substring(0, size)));
-                    residue = extracted+s[1].substring(size);
+                    Arrays.fill(counts,matcher.start(),matcher.end(),0);
+                    for (int j=i;j<i+size;j++){
+                        counts[j]=counts[j]*repetitions;
+                    }
                 } else {
-                    sizeForDecompressed+=residue.length();
                     break;
                 }
             }
+            sizeForDecompressed = LongStream.of(counts).sum();
             return this;
         }
+
 
     }
     
