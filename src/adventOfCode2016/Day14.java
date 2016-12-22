@@ -10,12 +10,48 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 
 public class Day14 {
+    final MessageDigest md5;
+
+    {
+        try {
+            md5 = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    final Function<Object, String> getHash = (Object o) -> {
+        byte[] bytes = String.valueOf(o).getBytes();
+        byte[] digestedBytes = md5.digest(bytes);
+        return getHex(digestedBytes).toLowerCase();
+    };
+
+    final Function<Object, String> getHash2016times = (Object o) -> {
+        String currentHash= String.valueOf(o);
+        for (int i=0;i<2016;i++){
+            currentHash=getHash.apply(currentHash);
+        }
+        return currentHash;
+    };
+
+
+    String repeat(char c, int count) {
+        return String.format("%0" + count + "d", 0).replace('0', c);
+    }
+
+
+    String getHex(byte[] bytes) {
+        BigInteger bi = new BigInteger(1, bytes);
+        return String.format("%0" + (bytes.length << 1) + "X", bi);
+    }
 
     public static void main(String[] args) {
         if (args.length > 0) {
@@ -33,35 +69,13 @@ public class Day14 {
 
     class KeySearcher {
         final String salt;
-        final MessageDigest md5;
+        private final Function<Object, String> hasher;
 
-        {
-            try {
-                md5 = MessageDigest.getInstance("MD5");
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        KeySearcher(String salt) {
+        KeySearcher(String salt, Function<Object, String> hasher) {
             this.salt = salt;
-            byte[] bytes = salt.getBytes();
-            md5.digest(bytes);
+            this.hasher = hasher;
         }
 
-        String getHashFor(Object o) {
-//            md5.reset();
-            byte[] bytes = String.valueOf(o).getBytes();
-            byte[] digestedBytes = md5.digest(bytes);
-//            String out = new BigInteger(digestedBytes).toString(16);
-            String out = getHex(digestedBytes).toLowerCase();
-            return out;
-        }
-
-        String getHex(byte[] bytes) {
-            BigInteger bi = new BigInteger(1, bytes);
-            return String.format("%0" + (bytes.length << 1) + "X", bi);
-        }
 
         List<Integer> findKey(int length) {
             int limit = 1000000;
@@ -75,76 +89,83 @@ public class Day14 {
         boolean isItProperKey(int i) {
             final Pattern triple = Pattern.compile("(\\w)\\1{2}");
             char targetChar;
-            String hash = getHashFor(salt + i);
+            String hash = hasher.apply(salt + i);
             Matcher matcher = triple.matcher(hash);
             if (matcher.find()) {
                 targetChar = matcher.group().charAt(0);
-                    if (quintFind(targetChar, i+1, i + 1000+1) > 0) return true;
+                if (quintFind(targetChar, i + 1, i + 1000 + 1) > 0) return true;
             }
             return false;
-    }
-
-    int quintFind(char c, int from, int to) {
-        String quint = repeat(c, 5);
-        for (int i = from; i < to; i++) {
-            String hash = getHashFor(salt + i);
-            if (hash.contains(quint))
-                return i;
         }
-        return -1;
-    }
 
-    String repeat(char c, int count) {
-        return String.format("%0" + count + "d", 0).replace('0', c);
-    }
+        int quintFind(char c, int from, int to) {
+            String quint = repeat(c, 5);
+            for (int i = from; i < to; i++) {
+                String hash = getHash.apply(salt + i);
+                if (hash.contains(quint))
+                    return i;
+            }
+            return -1;
+        }
 
-}
+
+    }
 
     @Test
     public void test() {
-        KeySearcher k = new KeySearcher("abc");
+        KeySearcher k = new KeySearcher("abc", getHash);
 
         int i = 39;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
+        System.out.println(getHash.apply("abc" + i));
         System.out.println(k.quintFind('e', i, i + 1000));
         i = 92;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
+        System.out.println(getHash.apply("abc" + i));
         System.out.println(k.quintFind('9', i, i + 1000));
         i = 110;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
+        System.out.println(getHash.apply("abc" + i));
         System.out.println(k.quintFind('9', i, i + 1000));
         i = 184;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
+        System.out.println(getHash.apply("abc" + i));
         System.out.println(k.quintFind('9', i, i + 1000));
         i = 291;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
+        System.out.println(getHash.apply("abc" + i));
         System.out.println(k.quintFind('4', i, i + 1000));
         i = 8811;
         System.out.println(i + " ======");
-        System.out.println(k.getHashFor("abc" + i));
-        System.out.println(k.quintFind('1', i+1, i + 1000));
+        System.out.println(getHash.apply("abc" + i));
+        System.out.println(k.quintFind('1', i + 1, i + 1000));
 
     }
 
     @Test
-    public void test2() {
-        KeySearcher k = new KeySearcher("abc");
+    public void testABC() {
+        KeySearcher k = new KeySearcher("abc",getHash);
         List<Integer> key = k.findKey(64);
         IntStream.range(1, key.size() + 1).forEach(
-                idx -> System.out.println(idx+". "+key.get(idx - 1))
+                idx -> System.out.println(idx + ". " + key.get(idx - 1))
         );
     }
+
     @Test
-    public void part1() {
-        KeySearcher k = new KeySearcher("cuanljph");
+    public void testABC_2() {
+        KeySearcher k = new KeySearcher("abc",getHash2016times);
         List<Integer> key = k.findKey(64);
         IntStream.range(1, key.size() + 1).forEach(
-                idx -> System.out.println(idx+". "+key.get(idx - 1))
+                idx -> System.out.println(idx + ". " + key.get(idx - 1))
+        );
+    }
+
+    @Test
+    public void part1() {
+        KeySearcher k = new KeySearcher("cuanljph",getHash);
+        List<Integer> key = k.findKey(64);
+        IntStream.range(1, key.size() + 1).forEach(
+                idx -> System.out.println(idx + ". " + key.get(idx - 1))
         );
     }
 }
