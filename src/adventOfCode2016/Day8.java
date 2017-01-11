@@ -31,27 +31,27 @@ public class Day8 {
     }
 
     public String processFirstWay(List<String> lines) {
-        Screen screen= new Screen();
+        Screen screen = new Screen();
         lines.stream().forEach(screen::exec);
-        return ""+screen.sum();
+        return "" + screen.sum();
     }
 
     public String processSecondWay(List<String> lines) {
-        Screen screen= new Screen();
+        Screen screen = new Screen();
         lines.stream().forEach(screen::exec);
-        return ""+screen;
+        return "" + screen;
     }
 
 
     @Test
     public void visualTest() {
-        System.out.println(new Screen(7,3).exec("rect 3x2"));
-        System.out.println(new Screen(7,3).exec("rect 3x2")
+        System.out.println(new Screen(7, 3).exec("rect 3x2"));
+        System.out.println(new Screen(7, 3).exec("rect 3x2")
                 .exec("rotate column x=1 by 1"));
-        System.out.println(new Screen(7,3).exec("rect 3x2")
+        System.out.println(new Screen(7, 3).exec("rect 3x2")
                 .exec("rotate column x=1 by 1").exec("rotate row y=0 by 4"));
         Screen x;
-        System.out.println(x= new Screen(7,3).exec("rect 3x2   ")
+        System.out.println(x = new Screen(7, 3).exec("rect 3x2   ")
                 .exec("rotate column x=1 by 1").exec("rotate row y=0 by 4").exec("rotate column x=1 by 1"));
         System.out.println(x.sum());
     }
@@ -60,24 +60,28 @@ public class Day8 {
         final int width;
         final int height;
         final int[][] pixels;
-        Screen(){
-            this(50,6);
+
+        Screen() {
+            this(50, 6);
         }
-        Screen(int width,int height){
-            this.width=width;
-            this.height=height;
+
+        Screen(int width, int height) {
+            this.width = width;
+            this.height = height;
             pixels = new int[height][width];
         }
-        Screen exec(String line){
+
+        Screen exec(String line) {
             List<Integer> arg = Arrays.asList(line.split("\\D+"))
-                    .stream().filter(e->!e.isEmpty())
+                    .stream().filter(e -> !e.isEmpty())
                     .map(Integer::valueOf).collect(toList());
-            if (line.contains("row")) rotateRow(arg.get(0),arg.get(1));
-            else if (line.contains("column")) rotateCol(arg.get(0),arg.get(1));
-            else if (line.contains("rect")) rectAxB(arg.get(0),arg.get(1));
+            if (line.contains("row")) rotateRow(arg.get(0), arg.get(1));
+            else if (line.contains("column")) rotateCol(arg.get(0), arg.get(1));
+            else if (line.contains("rect")) rectAxB(arg.get(0), arg.get(1));
             else throw new IllegalArgumentException(line);
             return this;
         }
+
         public Screen rectAxB(int wide, int height) {
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < wide; j++) {
@@ -86,42 +90,45 @@ public class Day8 {
             }
             return this;
         }
+
         public int sum() {
-            int sum=0;
+            int sum = 0;
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    sum+=pixels[i][j];
+                    sum += pixels[i][j];
                 }
             }
             return sum;
         }
 
-        public Screen rotateRow(int rowNumber, int shift){
-            int[] _copyOfRow = Arrays.copyOf(pixels[rowNumber],width);
-            for (int i=0;i<width;i++){
-                    pixels[rowNumber][(i+shift)%width] = _copyOfRow[i];
+        public Screen rotateRow(int rowNumber, int shift) {
+            int[] _copyOfRow = Arrays.copyOf(pixels[rowNumber], width);
+            for (int i = 0; i < width; i++) {
+                pixels[rowNumber][(i + shift) % width] = _copyOfRow[i];
             }
             return this;
         }
 
-        public Screen rotateCol(int colNumber, int shift){
-            int[] _copyOfCol =new int[height];
-            for (int i=0;i<height;i++){ _copyOfCol[i] = pixels[i][colNumber];}
-            for (int i=0;i<height;i++){
-                pixels[(i+shift)%height][colNumber]= _copyOfCol[i];
+        public Screen rotateCol(int colNumber, int shift) {
+            int[] _copyOfCol = new int[height];
+            for (int i = 0; i < height; i++) {
+                _copyOfCol[i] = pixels[i][colNumber];
+            }
+            for (int i = 0; i < height; i++) {
+                pixels[(i + shift) % height][colNumber] = _copyOfCol[i];
             }
             return this;
         }
 
         @Override
         public String toString() {
-            String out="";
+            String out = "";
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
-                    if (pixels[i][j] == 1) out+="#";
-                    else out+=" ";
+                    if (pixels[i][j] == 1) out += "#";
+                    else out += " ";
                 }
-                out+=System.lineSeparator();
+                out += System.lineSeparator();
             }
             return out;
         }

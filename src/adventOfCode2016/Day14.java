@@ -176,7 +176,7 @@ class KeySearcher {
         if (!hashes.containsKey(o)) {
             String hash = o;
             for (int i = 0; i <= 2016; i++) {
-                 hash  = hashOnce(hash);
+                hash = hashOnce(hash);
             }
             hashes.put(o, hash);
         }

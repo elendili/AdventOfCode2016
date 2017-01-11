@@ -192,7 +192,8 @@ public class Day13 {
             long oneCounts = Integer.toBinaryString(z).chars().filter(e -> e == '1').count();
             return oneCounts % 2 == 0;
         }
-        String showWithPoints(Collection<Point> collection){
+
+        String showWithPoints(Collection<Point> collection) {
             String out = "\n";
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
@@ -207,6 +208,7 @@ public class Day13 {
             }
             return out;
         }
+
         @Override
         public String toString() {
             return Arrays.stream(maze).map(e -> {
@@ -330,7 +332,7 @@ public class Day13 {
 
         @Override
         public int hashCode() {
-            return 37*x*y+x+y;
+            return 37 * x * y + x + y;
         }
     }
 }

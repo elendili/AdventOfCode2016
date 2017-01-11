@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,29 +30,30 @@ public class Day6 {
     }
 
     public String processFirstWay(List<String> lines) {
-        return process(lines,mostFrequent);
+        return process(lines, mostFrequent);
     }
+
     public String processSecondWay(List<String> lines) {
-        return process(lines,lessFrequent);
+        return process(lines, lessFrequent);
     }
 
-    Comparator<? super Map.Entry<Character,Integer>> lessFrequent= Comparator.comparing(Map.Entry::getValue);
-    Comparator<? super Map.Entry<Character,Integer>> mostFrequent= (e1,e2)-> e2.getValue().compareTo(e1.getValue());
+    Comparator<? super Map.Entry<Character, Integer>> lessFrequent = Comparator.comparing(Map.Entry::getValue);
+    Comparator<? super Map.Entry<Character, Integer>> mostFrequent = (e1, e2) -> e2.getValue().compareTo(e1.getValue());
 
-    public String process(List<String> lines, Comparator<? super Map.Entry<Character,Integer>> comparatorForSorting){
+    public String process(List<String> lines, Comparator<? super Map.Entry<Character, Integer>> comparatorForSorting) {
         Character freqCh;
-        String out="";
-        for (int i=0;i<lines.get(0).length();i++) {
-            Map<Character,Integer> charFreqInPosition=new HashMap<>();
+        String out = "";
+        for (int i = 0; i < lines.get(0).length(); i++) {
+            Map<Character, Integer> charFreqInPosition = new HashMap<>();
             for (String line : lines) {
                 Character c = line.charAt(i);
-                charFreqInPosition.put(c,charFreqInPosition.containsKey(c)?charFreqInPosition.get(c)+1:1);
+                charFreqInPosition.put(c, charFreqInPosition.containsKey(c) ? charFreqInPosition.get(c) + 1 : 1);
 
             }
-            freqCh=charFreqInPosition.entrySet().stream()
+            freqCh = charFreqInPosition.entrySet().stream()
                     .sorted(comparatorForSorting)
                     .map(Map.Entry::getKey).findFirst().get();
-            out+=freqCh;
+            out += freqCh;
         }
         return out;
     }

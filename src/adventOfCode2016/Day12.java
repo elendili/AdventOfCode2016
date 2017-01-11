@@ -32,33 +32,37 @@ public class Day12 {
 
     }
 
-    static class  Computer {
+    static class Computer {
         HashMap<String, Integer> registers = new HashMap<>();
         List<List<String>> commands = new ArrayList<>();
-        int pointer=0;
-        Computer(List<String> lines){
+        int pointer = 0;
+
+        Computer(List<String> lines) {
             parse(lines);
-            registers.put("a",0);
-            registers.put("b",0);
-            registers.put("c",1); // change this to 0 for part 1 of Day 12
-            registers.put("d",0);
+            registers.put("a", 0);
+            registers.put("b", 0);
+            registers.put("c", 1); // change this to 0 for part 1 of Day 12
+            registers.put("d", 0);
         }
-        void process(){
-            for (;pointer<commands.size() && pointer>=0;){
+
+        void process() {
+            for (; pointer < commands.size() && pointer >= 0; ) {
 //                System.out.println(pointer);
                 execute(commands.get(pointer));
             }
         }
-        void parse(List<String> lines){
-            for(String line:lines){
+
+        void parse(List<String> lines) {
+            for (String line : lines) {
                 String[] splitted = line.split(" ");
-                commands.add(Arrays.asList(splitted[0],splitted[1],splitted.length>2?splitted[2]:""));
+                commands.add(Arrays.asList(splitted[0], splitted[1], splitted.length > 2 ? splitted[2] : ""));
             }
         }
-        void execute(List<String> command){
-            switch (command.get(0)){
+
+        void execute(List<String> command) {
+            switch (command.get(0)) {
                 case "cpy":
-                    cpyXY(command.get(1),command.get(2));
+                    cpyXY(command.get(1), command.get(2));
                     break;
                 case "dec":
                     decX(command.get(1));
@@ -67,11 +71,12 @@ public class Day12 {
                     incX(command.get(1));
                     break;
                 case "jnz":
-                    jnzXY(command.get(1),command.get(2));
+                    jnzXY(command.get(1), command.get(2));
                     break;
             }
 
         }
+
         void cpyXY(String value, String register) {
             registers.put(register, getValue(value));
             pointer++;
@@ -88,24 +93,24 @@ public class Day12 {
         }
 
         void jnzXY(String x, String y) {
-            if (getValue(x)!=0){
-                pointer = pointer+getValue(y);
-            }else{
+            if (getValue(x) != 0) {
+                pointer = pointer + getValue(y);
+            } else {
                 pointer++;
             }
         }
 
         Integer getValue(String keyOrValue) {
-            if (Character.isDigit(keyOrValue.charAt(keyOrValue.length()-1)) ) {
+            if (Character.isDigit(keyOrValue.charAt(keyOrValue.length() - 1))) {
                 return Integer.valueOf(keyOrValue);
-            } else{
+            } else {
                 return registers.get(keyOrValue);
             }
         }
     }
 
     @Test
-    public void test(){
+    public void test() {
         Computer c = new Computer(Arrays.asList(("cpy 41 a\n" +
                 "inc a\n" +
                 "inc a\n" +
@@ -113,8 +118,9 @@ public class Day12 {
                 "jnz a 2\n" +
                 "dec a").split("\n")));
         c.process();
-        assertEquals(new Integer(42),c.registers.get("a"));
+        assertEquals(new Integer(42), c.registers.get("a"));
     }
+
     {
         /*
         cpy x y copies x (either an integer or the value of a register) into register y.

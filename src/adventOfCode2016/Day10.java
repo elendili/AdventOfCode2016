@@ -67,17 +67,17 @@ public class Day10 {
 
     void process(List<Integer> forCompare) {
         System.out.println("======= PROCESS STARTED ======");
-        while (values.size()>outputs.stream().mapToInt(e->e.chips.size()).sum()) {
+        while (values.size() > outputs.stream().mapToInt(e -> e.chips.size()).sum()) {
             bots.forEach(Bot::distribute);
         }
         System.out.println("======= BOTs which ever had deal with specific chips ======");
-        bots.stream().filter(b->b.history.contains(forCompare.get(0)) && b.history.contains(forCompare.get(1)) ).forEach(System.out::println);
+        bots.stream().filter(b -> b.history.contains(forCompare.get(0)) && b.history.contains(forCompare.get(1))).forEach(System.out::println);
 
         System.out.println("======= OUTS =======");
-        System.out.println(String.join("\n",outputs.stream().filter(e->!e.chips.isEmpty()).map(Out::toString).collect(toList())));
+        System.out.println(String.join("\n", outputs.stream().filter(e -> !e.chips.isEmpty()).map(Out::toString).collect(toList())));
 
         System.out.println("======= MULTIPLY OUTS =======");
-        System.out.println(outputs.stream().filter(e->e.number<3).mapToInt(e->e.chips.get(0)).reduce((a,b)->a*b).getAsInt());
+        System.out.println(outputs.stream().filter(e -> e.number < 3).mapToInt(e -> e.chips.get(0)).reduce((a, b) -> a * b).getAsInt());
 
     }
 

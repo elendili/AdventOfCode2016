@@ -3,9 +3,6 @@ package adventOfCode2016;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,6 +110,7 @@ public class Day15 {
 
         System.out.println(ds.findMoment()); //203660
     }
+
     @Test
     public void part2() throws Exception {
         DiscSystem ds = new DiscSystem(

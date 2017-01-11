@@ -108,19 +108,19 @@ class Trace {
     }};
 
     void moveY(int dy) {
-        Point _point=point;
+        Point _point = point;
         int sign = (0 > dy) ? -1 : 1;
-        for (int v = point.y+sign; v != point.y + dy+sign; v = v + sign) {
-            stepAndCheck(_point=new Point(point.x, v));
+        for (int v = point.y + sign; v != point.y + dy + sign; v = v + sign) {
+            stepAndCheck(_point = new Point(point.x, v));
         }
         this.point = _point;
     }
 
     void moveX(int dx) {
-        Point _point=point;
+        Point _point = point;
         int sign = (0 > dx) ? -1 : 1;
-        for (int v = point.x+sign; v != point.x + dx+sign; v = v + sign) {
-            stepAndCheck(_point=new Point(v, point.y));
+        for (int v = point.x + sign; v != point.x + dx + sign; v = v + sign) {
+            stepAndCheck(_point = new Point(v, point.y));
         }
         this.point = _point;
     }

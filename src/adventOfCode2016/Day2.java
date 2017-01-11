@@ -32,7 +32,7 @@ public class Day2 {
 
     public String processFirstWay(List<String> instrs) {
         String code = "";
-        Pointer pointer = new Pointer(firstKeypad,1, 1);
+        Pointer pointer = new Pointer(firstKeypad, 1, 1);
         for (String instr : instrs) {
             pointer = processInstr(pointer, instr);
             code += pointer.getKey();
@@ -85,9 +85,10 @@ public class Day2 {
         assertEquals("1985", processFirstWay(list));
         assertEquals("5DB3", processSecondWay(list));
     }
+
     final String[][] firstKeypad = {{"1", "2", "3"}, {"4", "5", "6"}, {"7", "8", "9"}};
-    final String[][] secondKeypad = {{null,null,"1",null,null},
-            {null,"2","3","4",null}, {"5","6","7","8","9"}, {null,"A","B","C",null},{null,null,"D",null,null}};
+    final String[][] secondKeypad = {{null, null, "1", null, null},
+            {null, "2", "3", "4", null}, {"5", "6", "7", "8", "9"}, {null, "A", "B", "C", null}, {null, null, "D", null, null}};
 
 }
 
@@ -96,31 +97,31 @@ class Pointer {
     final int x, y;
 
     Pointer(String[][] keypad, int x, int y) {
-        this.keypad=keypad;
+        this.keypad = keypad;
         this.x = x;
         this.y = y;
     }
 
     Pointer left() {
-        int newX = x <= 0 ? 0:keypad[x-1][y]==null?x:x - 1;
-        return new Pointer(keypad,newX, y);
+        int newX = x <= 0 ? 0 : keypad[x - 1][y] == null ? x : x - 1;
+        return new Pointer(keypad, newX, y);
     }
 
     Pointer right() {
-        int lastIndex= keypad.length-1;
-        int newX = x >=lastIndex? lastIndex: (keypad[x+1][y]==null?x:x + 1);
-        return new Pointer(keypad,newX, y);
+        int lastIndex = keypad.length - 1;
+        int newX = x >= lastIndex ? lastIndex : (keypad[x + 1][y] == null ? x : x + 1);
+        return new Pointer(keypad, newX, y);
     }
 
     Pointer up() {
-        int newY = y <= 0 ? 0:keypad[x][y-1]==null?y:y - 1;
-        return new Pointer(keypad,x, newY);
+        int newY = y <= 0 ? 0 : keypad[x][y - 1] == null ? y : y - 1;
+        return new Pointer(keypad, x, newY);
     }
 
     Pointer down() {
-        int lastIndex= keypad[x].length-1;
-        int newY = y >=lastIndex? lastIndex: (keypad[x][y+1]==null?y:y + 1);
-        return new Pointer(keypad,x, newY);
+        int lastIndex = keypad[x].length - 1;
+        int newY = y >= lastIndex ? lastIndex : (keypad[x][y + 1] == null ? y : y + 1);
+        return new Pointer(keypad, x, newY);
     }
 
     String getKey() {
